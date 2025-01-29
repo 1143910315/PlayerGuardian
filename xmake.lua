@@ -59,5 +59,7 @@ target("PlayerGuardian")
     
     after_build(function (target)
         local plugin_packer = import("script.after_build")
-        plugin_packer.copy_files(target:targetfile())
+        if plugin_packer then
+            plugin_packer.copy_files(target:targetfile())
+        end
     end)
