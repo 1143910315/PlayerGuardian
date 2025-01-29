@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import NavigateMenu from './components/NavigateMenu.vue'
+import LeftDrawer from './components/LeftDrawer.vue'
 </script>
 
 <template>
@@ -9,7 +10,9 @@ import NavigateMenu from './components/NavigateMenu.vue'
     <header>
 
       <div class="wrapper">
-        <NavigateMenu />
+        <LeftDrawer>
+          <NavigateMenu />
+        </LeftDrawer>
 
         <nav>
           <RouterLink to="/">Home</RouterLink>
@@ -23,5 +26,4 @@ import NavigateMenu from './components/NavigateMenu.vue'
   </el-config-provider>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
