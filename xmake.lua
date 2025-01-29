@@ -58,8 +58,23 @@ target("PlayerGuardian")
     set_languages("clatest", "cxxlatest")
     
     after_build(function (target)
-        local plugin_packer = import("script.after_build")
-        if plugin_packer then
-            plugin_packer.copy_files(target:targetfile())
-        end
+        try
+        {
+            -- try 代码块
+            function ()
+                local plugin_packer = import("script.after_build")
+                if plugin_packer then
+                    plugin_packer.copy_files(target:targetfile())
+                end
+            end,
+
+            -- catch 代码块
+            catch
+            {
+                -- 发生异常后，被执行
+                function (errors)
+                    print("please create after_build.lua in script directory")
+                end
+            }
+        }
     end)
