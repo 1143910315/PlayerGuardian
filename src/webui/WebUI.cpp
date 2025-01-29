@@ -1,4 +1,5 @@
 #include "thread/ThreadPool.h"
+#include "WebUI.h"
 #include <webui.hpp>
 #undef min
 #undef max
@@ -9,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <filesystem>
 
 template<typename ... Args>
 std::string concatEven(std::string firstString, std::string secondString, std::string str, Args... args);
@@ -63,9 +65,11 @@ std::function<void()> timeSend = []() {
         pool.addDelayTask(std::chrono::seconds(1), timeSend);
     }
 };
-static void startServer(const std::string& url,int port=-1) {
+static void runServer(const std::string& url, int port = -1) {
     webui::set_default_root_folder("dist");
-
+    auto u8Path = std::string((char*)std::filesystem::current_path().generic_u8string().c_str());
+    myWindow.set_profile("cache", std::format("{}/plugins/PlayerGuardian/cache", u8Path));
+    
     myWindow.bind("", [](webui::window::event *e) {
             if (e->event_type == WEBUI_EVENT_CONNECTED) {
                 pool.addDelayTask(std::chrono::seconds(1), timeSend);
@@ -88,32 +92,33 @@ static void startServer(const std::string& url,int port=-1) {
         });
     if (port != -1) {
         myWindow.set_size(port);
-    } 
+    }
     myWindow.show(url);
     webui::wait();
 }
 
-int main(int argc, char **argv) {
-#ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
-#endif
-    if (argc < 2) {
-        startServer("index.html");
-    } else {
-        startServer(argv[1],9000);
+webuiServer::WebUI::WebUI() {
+}
+
+webuiServer::WebUI::~WebUI() {
+    stopServer();
+}
+
+void webuiServer::WebUI::startServer(const std::string& url, int port) {
+    if (m_serverThread.joinable()) {
+        // 避免重复启动
+        return;
     }
-    return 0;
+    // 通过 thread 传递参数并启动线程
+    m_serverThread = std::thread([this, url, port]() {
+            // 实际服务逻辑
+            runServer(url, port);
+        });
 }
 
-#ifdef _WIN32
-// Release build
-int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd) {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nShowCmd;
-     startServer("index.html");
-     return 0;
+void webuiServer::WebUI::stopServer() {
+    if (m_serverThread.joinable()) {
+        webui::exit();
+    }
+    m_serverThread.join();
 }
-
-#endif

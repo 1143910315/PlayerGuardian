@@ -5,7 +5,7 @@ import { ElementPlus } from '@element-plus/icons-vue'
 <template>
   <div class="about">
     <el-icon><ElementPlus /></el-icon>
-    <h1>This is an about page</h1>
+    <h1>This is an about page y</h1>
   </div>
 </template>
 
