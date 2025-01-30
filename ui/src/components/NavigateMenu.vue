@@ -1,25 +1,15 @@
 <template>
-  <el-menu default-active="2" class="menu">
-    <el-sub-menu index="1">
+  <el-menu default-active="1" class="menu">
+    <el-menu-item index="1" class="f no-padding">
       <template #title>
-        <el-icon>
-          <location />
-        </el-icon>
-        <span>Navigator One</span>
+        <RouterLink to="/playerTrajectoryMap" class="fl fg routerLink" @click="targetNavigate">
+          <el-icon>
+            <location />
+          </el-icon>
+          <div>玩家轨迹地图</div>
+        </RouterLink>
       </template>
-      <el-menu-item-group>
-        <template #title><span>Group One</span></template>
-        <el-menu-item index="1-1">item one</el-menu-item>
-        <el-menu-item index="1-2">item two</el-menu-item>
-      </el-menu-item-group>
-      <el-menu-item-group title="Group Two">
-        <el-menu-item index="1-3">item three</el-menu-item>
-      </el-menu-item-group>
-      <el-sub-menu index="1-4">
-        <template #title><span>item four</span></template>
-        <el-menu-item index="1-4-1">item one</el-menu-item>
-      </el-sub-menu>
-    </el-sub-menu>
+    </el-menu-item>
     <el-menu-item index="2">
       <el-icon><icon-menu /></el-icon>
       <template #title>Navigator Two</template>
@@ -39,6 +29,15 @@
   </el-menu>
 </template>
 
+<style>
+.menu {
+  border: none;
+}
+.routerLink{
+  padding: 0 var(--el-menu-base-level-padding);
+}
+</style>
+
 <script lang="ts" setup>
 import {
   Document,
@@ -46,10 +45,9 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
+const emit = defineEmits(['navigete'])
+const targetNavigate=() => {
+  emit('navigete')
+}
 </script>
 
-<style>
-.menu {
-  border: none;
-}
-</style>

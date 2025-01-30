@@ -1,5 +1,5 @@
 <template>
-  <el-drawer v-model="isShow" title="I am the title" :direction="directionData" :before-close="handleClose">
+  <el-drawer v-model="isShow" title="菜单" :direction="directionData" :before-close="handleClose">
     <slot></slot>
   </el-drawer>
 </template>
@@ -16,7 +16,9 @@ const handleClose = (done: () => void) => {
   done()
 }
 const show = () => (isShow.value = true)
+const hide = () => (isShow.value = false)
 defineExpose({
-  show
+  show,
+  hide
 })
 </script>
