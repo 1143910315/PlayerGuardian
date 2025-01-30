@@ -29,6 +29,5 @@ namespace PlayerGuardian {
 
     private:
         ll::mod::NativeMod& mSelf;
-        webuiServer::WebUI webUI;
     };
 } // namespace PlayerGuardian

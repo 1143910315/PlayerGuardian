@@ -5,12 +5,12 @@
 #undef max
 #include <chrono>
 #include <date/date.h>
+#include <filesystem>
 #include <format>
 #include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <filesystem>
 
 template<typename ... Args>
 std::string concatEven(std::string firstString, std::string secondString, std::string str, Args... args);
@@ -66,30 +66,6 @@ std::function<void()> timeSend = []() {
     }
 };
 static void runServer(const std::string& url, int port = -1) {
-    webui::set_default_root_folder("dist");
-    auto u8Path = std::string((char*)std::filesystem::current_path().generic_u8string().c_str());
-    myWindow.set_profile("cache", std::format("{}/plugins/PlayerGuardian/cache", u8Path));
-    
-    myWindow.bind("", [](webui::window::event *e) {
-            if (e->event_type == WEBUI_EVENT_CONNECTED) {
-                pool.addDelayTask(std::chrono::seconds(1), timeSend);
-                std::cout << "Connected." << std::endl;
-            } else if (e->event_type == WEBUI_EVENT_DISCONNECTED) {
-                running = false;
-                std::cout << "Disconnected." << std::endl;
-            } else if (e->event_type == WEBUI_EVENT_MOUSE_CLICK) {
-                std::cout << "Click." << std::endl;
-            } else if (e->event_type == WEBUI_EVENT_NAVIGATION) {
-                auto str = e->get_string_view();
-                std::cout << "Starting navigation to: " << str << std::endl;
-                //myWindow.navigate(str);
-            }
-        });
-    myWindow.bind("clickCount", [](webui::window::event *e) {
-            count++;
-            std::cout << e->get_string_view(0) << std::endl;
-            e->return_string(std::format("{}", count));
-        });
     if (port != -1) {
         myWindow.set_size(port);
     }
@@ -98,16 +74,49 @@ static void runServer(const std::string& url, int port = -1) {
 }
 
 webuiServer::WebUI::WebUI() {
+    webui::set_default_root_folder("dist");
+    auto u8Path = std::string((char*)std::filesystem::current_path().generic_u8string().c_str());
+    myWindow.set_profile("cache", std::format("{}/plugins/PlayerGuardian/cache", u8Path));
+
+    myWindow.bind("", [](webui::window::event* e) {
+        if (e->event_type == WEBUI_EVENT_CONNECTED) {
+            pool.addDelayTask(std::chrono::seconds(1), timeSend);
+            std::cout << "Connected." << std::endl;
+        } else if (e->event_type == WEBUI_EVENT_DISCONNECTED) {
+            running = false;
+            std::cout << "Disconnected." << std::endl;
+        } else if (e->event_type == WEBUI_EVENT_MOUSE_CLICK) {
+            std::cout << "Click." << std::endl;
+        } else if (e->event_type == WEBUI_EVENT_NAVIGATION) {
+            auto str = e->get_string_view();
+            std::cout << "Starting navigation to: " << str << std::endl;
+            //myWindow.navigate(str);
+        }
+        });
+    myWindow.bind("clickCount", [](webui::window::event* e) {
+        count++;
+        std::cout << e->get_string_view(0) << std::endl;
+        e->return_string(std::format("{}", count));
+        });
 }
 
 webuiServer::WebUI::~WebUI() {
-    stopServer();
+    if (m_serverThread.joinable()) {
+        webui::exit();
+        m_serverThread.join();
+    }
+}
+
+webuiServer::WebUI &webuiServer::WebUI::getInstance() {
+    static WebUI instance;
+    return instance;
 }
 
 void webuiServer::WebUI::startServer(const std::string& url, int port) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_url = url;
     if (m_serverThread.joinable()) {
-        // 避免重复启动
-        return;
+        stopServer();
     }
     // 通过 thread 传递参数并启动线程
     m_serverThread = std::thread([this, url, port]() {
@@ -116,9 +125,13 @@ void webuiServer::WebUI::startServer(const std::string& url, int port) {
         });
 }
 
+void webuiServer::WebUI::restartServer() {
+    startServer(m_url, -1);
+}
+
 void webuiServer::WebUI::stopServer() {
     if (m_serverThread.joinable()) {
-        webui::exit();
+        myWindow.close();
+        m_serverThread.join();
     }
-    m_serverThread.join();
 }

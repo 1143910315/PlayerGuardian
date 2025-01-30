@@ -53,7 +53,7 @@ target("PlayerGuardian")
     set_kind("shared")
     add_deps("ui")
     add_includedirs("src")
-    add_headerfiles("src/**.h")
+    add_headerfiles("src/**.h", "src/**.hpp")
     add_files("src/**.cpp")
     set_languages("clatest", "cxxlatest")
     
