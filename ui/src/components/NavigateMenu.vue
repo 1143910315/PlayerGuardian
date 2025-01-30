@@ -2,6 +2,16 @@
   <el-menu default-active="1" class="menu">
     <el-menu-item index="1" class="f no-padding">
       <template #title>
+        <RouterLink to="/" class="fl fg routerLink" @click="targetNavigate">
+          <el-icon>
+            <Cpu />
+          </el-icon>
+          <div>服务器性能</div>
+        </RouterLink>
+      </template>
+    </el-menu-item>
+    <el-menu-item index="2" class="f no-padding">
+      <template #title>
         <RouterLink to="/playerTrajectoryMap" class="fl fg routerLink" @click="targetNavigate">
           <el-icon>
             <location />
@@ -10,17 +20,17 @@
         </RouterLink>
       </template>
     </el-menu-item>
-    <el-menu-item index="2">
+    <el-menu-item index="3">
       <el-icon><icon-menu /></el-icon>
       <template #title>Navigator Two</template>
     </el-menu-item>
-    <el-menu-item index="3" disabled>
+    <el-menu-item index="4" disabled>
       <el-icon>
         <document />
       </el-icon>
       <template #title>Navigator Three</template>
     </el-menu-item>
-    <el-menu-item index="4">
+    <el-menu-item index="5">
       <el-icon>
         <setting />
       </el-icon>
@@ -33,21 +43,22 @@
 .menu {
   border: none;
 }
-.routerLink{
+
+.routerLink {
   padding: 0 var(--el-menu-base-level-padding);
 }
 </style>
 
 <script lang="ts" setup>
 import {
+  Cpu,
   Document,
   Menu as IconMenu,
   Location,
   Setting,
 } from '@element-plus/icons-vue'
 const emit = defineEmits(['navigete'])
-const targetNavigate=() => {
+const targetNavigate = () => {
   emit('navigete')
 }
 </script>
-

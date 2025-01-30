@@ -4,13 +4,13 @@
 
       <div class="wrapper">
         <LeftDrawer ref="leftDrawer">
-          <NavigateMenu @navigete="hideMenu"/>
+          <NavigateMenu @navigete="hideMenu" />
         </LeftDrawer>
         <div class="fl">
           <button aria-label="菜单" @click="showMenu" class="f">
             <i class="segoe-icon" aria-hidden="true"></i>
             <div class="right-padding"></div>
-            <el-text class="mx-1" size="large">{{ $router.currentRoute.value.meta.pageName }}</el-text>
+            <el-text size="large">{{ $router.currentRoute.value.meta.pageName }}</el-text>
           </button>
         </div>
       </div>

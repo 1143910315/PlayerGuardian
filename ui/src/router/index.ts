@@ -12,11 +12,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'performanceView',
       meta:{
-        pageName: '主页'
+        pageName: '服务器性能'
       },
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('../views/PerformanceView.vue'),
     },
     {
       path: '/playerTrajectoryMap',
