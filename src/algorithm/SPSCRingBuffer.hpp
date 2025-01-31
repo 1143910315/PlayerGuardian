@@ -49,7 +49,7 @@ public:
 
         out = std::move(buffer_[current_head % Capacity]);
 
-        // 更新head（保证数据可见性）
+        // 更新head
         head_.value.store(current_head + 1, std::memory_order_relaxed);
         return true;
     }

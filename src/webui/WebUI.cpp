@@ -49,7 +49,6 @@ std::string generateCustomEvent(std::string className, std::string ev, Args... a
 }
 
 int64_t count = 0;
-thread::ThreadPool pool;
 bool running = true;
 webui::window myWindow;
 std::function<void()> timeSend = []() {
@@ -62,7 +61,7 @@ std::function<void()> timeSend = []() {
         std::ostringstream oss;
         oss << date::format("%Y-%m-%d %H:%M:%S", currentTime);
         myWindow.run(generateCustomEvent("receiveCppData", "receive-data", "message", "当前时间是：" + oss.str()));
-        pool.addDelayTask(std::chrono::seconds(1), timeSend);
+        thread::ThreadPool::defaultThreadPool().addDelayTask(std::chrono::seconds(1), timeSend);
     }
 };
 static void runServer(const std::string& url, int port = -1) {
@@ -75,28 +74,28 @@ static void runServer(const std::string& url, int port = -1) {
 
 webuiServer::WebUI::WebUI() {
     webui::set_default_root_folder("dist");
-    auto u8Path = std::string((char*)std::filesystem::current_path().generic_u8string().c_str());
+    auto u8Path = std::string((char *)std::filesystem::current_path().generic_u8string().c_str());
     myWindow.set_profile("cache", std::format("{}/plugins/PlayerGuardian/cache", u8Path));
 
-    myWindow.bind("", [](webui::window::event* e) {
-        if (e->event_type == WEBUI_EVENT_CONNECTED) {
-            pool.addDelayTask(std::chrono::seconds(1), timeSend);
-            std::cout << "Connected." << std::endl;
-        } else if (e->event_type == WEBUI_EVENT_DISCONNECTED) {
-            running = false;
-            std::cout << "Disconnected." << std::endl;
-        } else if (e->event_type == WEBUI_EVENT_MOUSE_CLICK) {
-            std::cout << "Click." << std::endl;
-        } else if (e->event_type == WEBUI_EVENT_NAVIGATION) {
-            auto str = e->get_string_view();
-            std::cout << "Starting navigation to: " << str << std::endl;
-            //myWindow.navigate(str);
-        }
+    myWindow.bind("", [](webui::window::event *e) {
+            if (e->event_type == WEBUI_EVENT_CONNECTED) {
+                thread::ThreadPool::defaultThreadPool().addDelayTask(std::chrono::seconds(1), timeSend);
+                std::cout << "Connected." << std::endl;
+            } else if (e->event_type == WEBUI_EVENT_DISCONNECTED) {
+                running = false;
+                std::cout << "Disconnected." << std::endl;
+            } else if (e->event_type == WEBUI_EVENT_MOUSE_CLICK) {
+                std::cout << "Click." << std::endl;
+            } else if (e->event_type == WEBUI_EVENT_NAVIGATION) {
+                auto str = e->get_string_view();
+                std::cout << "Starting navigation to: " << str << std::endl;
+                //myWindow.navigate(str);
+            }
         });
-    myWindow.bind("clickCount", [](webui::window::event* e) {
-        count++;
-        std::cout << e->get_string_view(0) << std::endl;
-        e->return_string(std::format("{}", count));
+    myWindow.bind("clickCount", [](webui::window::event *e) {
+            count++;
+            std::cout << e->get_string_view(0) << std::endl;
+            e->return_string(std::format("{}", count));
         });
 }
 
