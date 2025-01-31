@@ -1,6 +1,6 @@
 #include <atomic>
 #include <bit>
-#include <stdexcept>
+#include <new>
 
 template<typename T, size_t Capacity>
 class SPSCRingBuffer {
@@ -13,9 +13,14 @@ class SPSCRingBuffer {
         std::atomic<size_t> value = 0;
     };
 
+    // 每个元素独占缓存行
+    struct alignas(Alignment) CacheLineAlignedElement {
+        T value;
+    };
+
     PaddedAtomic head_;  // 消费者位置（单调递增）
     PaddedAtomic tail_;  // 生产者位置（单调递增）
-    alignas(Alignment) T buffer_[Capacity];  // 环形存储
+    CacheLineAlignedElement buffer_[Capacity] = {};  // 环形存储
 
 public:
     SPSCRingBuffer() = default;
@@ -24,7 +29,7 @@ public:
         const size_t current_tail = tail_.value.load(std::memory_order_relaxed);
 
         // 直接赋值
-        buffer_[current_tail % Capacity] = std::forward<T>(value);
+        buffer_[current_tail % Capacity].value = std::forward<T>(value);
 
         // 更新tail（保证写入可见性）
         tail_.value.store(current_tail + 1, std::memory_order_release);
@@ -47,7 +52,7 @@ public:
             return false;
         }
 
-        out = std::move(buffer_[current_head % Capacity]);
+        out = buffer_[current_head % Capacity].value;
 
         // 更新head
         head_.value.store(current_head + 1, std::memory_order_relaxed);

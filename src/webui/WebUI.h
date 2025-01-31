@@ -19,6 +19,9 @@ namespace webuiServer {
         // 停止服务线程（优雅关闭）
         void stopServer();
 
+        // 发送TPS数据
+        void sendTpsRecordData(size_t tps, size_t mspt);
+
     private:
         // 私有默认构造函数
         WebUI();

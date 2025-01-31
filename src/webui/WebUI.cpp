@@ -37,15 +37,46 @@ std::string concatEven(std::string firstString, std::string secondString, std::s
 
 // 生成自定义事件执行脚本
 template<typename ... Args>
-std::string generateCustomEvent(std::string className, std::string ev, Args... args) {
+std::string generateCustomEvent(std::string className, std::string eventName, Args... args) {
     std::string str = "for(e of document.getElementsByClassName('" + className + "')){";
-    str += "e.dispatchEvent(new CustomEvent('" + ev + "', { detail: { ";
+    str += "e.dispatchEvent(new CustomEvent('" + eventName + "', { detail: { ";
 
     str += concatOdd(": '", "', ", args ...);
 
     str += " }, bubbles: false, cancelable: true }));";
     str += "}";
     return str;
+}
+
+namespace detail {
+    // 递归终止条件：无参数时返回空字符串
+    inline std::string process() {
+        return "";
+    }
+
+    // 处理单个剩余参数
+    template<typename T>
+    std::string process(T&& arg) {
+        return std::string(std::forward<T>(arg)) + "，";
+    }
+
+    // 处理两个及以上参数的通用情况
+    template<typename T1, typename T2, typename ... Rest>
+    std::string process(T1&& arg1, T2&& arg2, Rest&&... rest) {
+        std::string segment = std::string(std::forward<T1>(arg1)) + "，"
+            + std::string(std::forward<T2>(arg2)) + "。";
+
+        if constexpr (sizeof...(Rest) > 0) {
+            return segment + process(std::forward<Rest>(rest)...);
+        } else {
+            return segment;
+        }
+    }
+} // namespace detail
+
+template<typename ... Args>
+std::string test(Args&&... args) {
+    return detail::process(std::forward<Args>(args)...);
 }
 
 int64_t count = 0;
@@ -64,6 +95,7 @@ std::function<void()> timeSend = []() {
         thread::ThreadPool::defaultThreadPool().addDelayTask(std::chrono::seconds(1), timeSend);
     }
 };
+
 static void runServer(const std::string& url, int port = -1) {
     if (port != -1) {
         myWindow.set_size(port);
@@ -133,4 +165,8 @@ void webuiServer::WebUI::stopServer() {
         myWindow.close();
         m_serverThread.join();
     }
+}
+
+void webuiServer::WebUI::sendTpsRecordData(size_t tps, size_t mspt) {
+    myWindow.run(generateCustomEvent("receiveTpsData", "tps-data", "TPS", std::to_string(tps), "MSPT", std::to_string(mspt)));
 }
