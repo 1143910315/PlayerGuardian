@@ -97,3 +97,7 @@ button{
 .right-padding{
   padding-right: 6px;
 }
+
+.hidden{
+  display: none;
+}

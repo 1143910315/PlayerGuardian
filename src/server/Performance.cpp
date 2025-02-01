@@ -18,7 +18,7 @@ server::Performance &server::Performance::getInstance() {
 void server::Performance::tpsBeginRecord() {
     tpsEndRecord();
     tpsRecordFlag = true;
-    std::function<void()> recordTask = [this, recordTask]() {
+    recordTask = [this]() {
         if (tpsRecordFlag) {
             std::tuple<std::chrono::steady_clock::time_point, std::chrono::steady_clock::time_point> timePair;
             size_t tickCount = 0;
@@ -56,8 +56,12 @@ void server::Performance::tpsEndRecord() {
     }
 }
 
+server::Performance::~Performance() {
+    tpsEndRecord();
+}
+
 void server::Performance::tpsRecordData(size_t tps, size_t mspt) {
-    if (tpsRecordDeque.size() > 3) {
+    if (tpsRecordDeque.size() > 2) {
         tpsRecordDeque.pop_front();
     }
     tpsRecordDeque.push_back(std::make_tuple(tps, mspt));
@@ -71,10 +75,11 @@ void server::Performance::sendTpsRecordData() {
         totalTps += tps;
         totalMspt += mspt;
     }
+
     if (count == 0) [[unlikely]] {
         webuiServer::WebUI::getInstance().sendTpsRecordData(0, 0);
     } else {
-        webuiServer::WebUI::getInstance().sendTpsRecordData((totalTps + count / 2) / count, (totalMspt + count / 2) / count);
+        webuiServer::WebUI::getInstance().sendTpsRecordData(totalTps / count, (totalMspt + count / 2) / count / 1000);
     }
 }
 

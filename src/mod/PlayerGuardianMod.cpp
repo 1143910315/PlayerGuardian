@@ -1,5 +1,6 @@
 #include "command/UICommand.h"
 #include "PlayerGuardianMod.h"
+#include "server/Performance.h"
 #include <ll/api/mod/RegisterHelper.h>
 
 namespace PlayerGuardian {
@@ -18,12 +19,14 @@ namespace PlayerGuardian {
     bool PlayerGuardianMod::enable() {
         getSelf().getLogger().debug("Enabling...");
         command::UICommand::getInstance().registerCommand();
+        server::Performance::getInstance().tpsBeginRecord();
         // Code for enabling the mod goes here.
         return true;
     }
 
     bool PlayerGuardianMod::disable() {
         getSelf().getLogger().debug("Disabling...");
+        server::Performance::getInstance().tpsEndRecord();
         // Code for disabling the mod goes here.
         return true;
     }

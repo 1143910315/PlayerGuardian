@@ -15,7 +15,7 @@
         </div>
       </div>
     </header>
-
+    <div class="hidden receiveTpsData" @tps-data="tpsData"></div>
     <RouterView />
   </el-config-provider>
 </template>
@@ -37,6 +37,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import NavigateMenu from './components/NavigateMenu.vue'
 import LeftDrawer from './components/LeftDrawer.vue'
 import { useTemplateRef } from 'vue'
+import { useTpsStore } from '@/stores/tps'
 
 const leftDrawer = useTemplateRef('leftDrawer')
 const showMenu = () => {
@@ -44,5 +45,16 @@ const showMenu = () => {
 }
 const hideMenu = () => {
   leftDrawer.value?.hide()
+}
+
+interface TpsEventDetail {
+  TPS: number
+  MSPT: number
+}
+
+const tpsData = (event: CustomEvent<TpsEventDetail>) => {
+  const store = useTpsStore()
+  store.tps = event.detail.TPS
+  store.mspt = event.detail.MSPT
 }
 </script>

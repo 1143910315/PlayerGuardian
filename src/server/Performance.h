@@ -22,7 +22,7 @@ namespace server {
         // 私有默认构造函数
         Performance() = default;
         // 私有析构函数
-        ~Performance() = default;
+        ~Performance();
 
         // 记录tps以及mspt
         void tpsRecordData(size_t tps, size_t mspt);
@@ -37,5 +37,7 @@ namespace server {
         std::condition_variable tpsRecordCV;
         // 记录的tps以及mspt
         std::deque<std::tuple<size_t, size_t>> tpsRecordDeque;
+        // 记录tps的线程
+        std::function<void()> recordTask;
     };
 } // namespace server
