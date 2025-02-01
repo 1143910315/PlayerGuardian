@@ -56,6 +56,6 @@ const tpsStatus = computed(() => {
 })
 
 const msptStatus = computed(() => {
-  return mspt.value < 20 ? 'success' : mspt.value < 60 ? 'warning' : 'danger'
+  return mspt.value <= 50 ? 'success' : mspt.value <= 100 ? 'warning' : 'danger'
 })
 </script>
