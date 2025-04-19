@@ -1,7 +1,6 @@
 <template>
   <el-config-provider :locale="zhCn">
     <header>
-
       <div class="wrapper">
         <LeftDrawer ref="leftDrawer">
           <NavigateMenu @navigete="hideMenu" />
@@ -15,7 +14,7 @@
         </div>
       </div>
     </header>
-    <div class="hidden receiveTpsData" @tps-data="tpsData"></div>
+    <div class="hidden receiveTpsData receiveEntityData" @tps-data="tpsData" @entity-data="entityData"></div>
     <RouterView />
   </el-config-provider>
 </template>
@@ -52,9 +51,32 @@ interface TpsEventDetail {
   MSPT: number
 }
 
+interface EntityEventDetail {
+  age: number
+  category: number
+  dimensionId: number
+  isLeashed: boolean
+  isTame: boolean
+  isTrusting: boolean
+  itemTypeName: string
+  nameTag: string
+  runtimeID: number
+  typeName: string
+  x: number
+  y: number
+  z: number
+}
+
 const tpsData = (event: CustomEvent<TpsEventDetail>) => {
   const store = useTpsStore()
   store.tps = event.detail.TPS
   store.mspt = event.detail.MSPT
+}
+
+const entityData = (event: CustomEvent<EntityEventDetail[]>) => {
+  //const store = useTpsStore()
+  //store.tps = event.detail.TPS
+  //store.mspt = event.detail.MSPT
+  console.log(event.detail)
 }
 </script>

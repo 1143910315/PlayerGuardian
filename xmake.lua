@@ -10,14 +10,16 @@ end
 if is_mode("debug") then
     add_requires("webui", {debug = true})
     add_requires("date", {debug = true})
+    add_requires("nlohmann_json", {debug = true})
     if is_config("target_type", "server") then
         add_requires("levilamina", {configs = {target_type = "server"}, debug = true})
     else
         add_requires("levilamina", {configs = {target_type = "client"}, debug = true})
     end
 else
-    add_requires("webui")
+    add_requires("webui", {configs = {log = false}})
     add_requires("date")
+    add_requires("nlohmann_json")
     if is_config("target_type", "server") then
         add_requires("levilamina", {configs = {target_type = "server"}})
     else
@@ -44,11 +46,13 @@ target("PlayerGuardian")
     add_packages(
         "webui",
         "date",
+        "nlohmann_json",
         "levilamina"
     )
     set_exceptions("none") -- To avoid conflicts with /EHa.
     if is_mode("debug") then
         set_symbols("debug", "edit")
+        add_defines("NO_BUILD_UI")
     end
     set_kind("shared")
     add_deps("ui")

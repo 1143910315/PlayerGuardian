@@ -4,6 +4,7 @@
 #undef min
 #undef max
 #include <chrono>
+#include <cstdint>
 #include <date/date.h>
 #include <filesystem>
 #include <format>
@@ -11,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <thread>
 
 template<typename ... Args>
 std::string concatEven(std::string firstString, std::string secondString, std::string str, Args... args);
@@ -50,7 +52,7 @@ std::string generateCustomEvent(std::string className, std::string eventName, Ar
 
 namespace detail {
     // 递归终止条件：无参数时返回空字符串
-    inline std::string process() {
+    inline static std::string process() {
         return "";
     }
 
@@ -75,8 +77,13 @@ namespace detail {
 } // namespace detail
 
 template<typename ... Args>
-std::string test(Args&&... args) {
+std::string concatJson(Args&&... args) {
     return detail::process(std::forward<Args>(args)...);
+}
+
+// 生成自定义事件执行脚本
+std::string generateCustomEventForJson(const std::string& className, const std::string& eventName, const std::string& json) {
+    return "for(e of document.getElementsByClassName('" + className + "')){e.dispatchEvent(new CustomEvent('" + eventName + "', { detail: " + json + ", bubbles: false, cancelable: true }));}";
 }
 
 int64_t count = 0;
@@ -105,7 +112,7 @@ static void runServer(const std::string& url, int port = -1) {
 }
 
 webuiServer::WebUI::WebUI() {
-    webui::set_default_root_folder("dist");
+    webui::set_default_root_folder("plugins/PlayerGuardian/dist");
     auto u8Path = std::string((char *)std::filesystem::current_path().generic_u8string().c_str());
     myWindow.set_profile("cache", std::format("{}/plugins/PlayerGuardian/cache", u8Path));
 
@@ -169,4 +176,8 @@ void webuiServer::WebUI::stopServer() {
 
 void webuiServer::WebUI::sendTpsRecordData(size_t tps, size_t mspt) {
     myWindow.run(generateCustomEvent("receiveTpsData", "tps-data", "TPS", std::to_string(tps), "MSPT", std::to_string(mspt)));
+}
+
+void webuiServer::WebUI::sendEntityRecordData(const nlohmann::json& actorInfoList) {
+    myWindow.run(generateCustomEventForJson("receiveEntityData", "entity-data", actorInfoList.dump()));
 }

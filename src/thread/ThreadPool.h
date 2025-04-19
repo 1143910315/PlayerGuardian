@@ -4,10 +4,14 @@
 #include <functional>
 #include <future>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <tuple>
+#include <type_traits>
 #include <vector>
+
 namespace thread {
     class CancelableTask {
     public:
@@ -70,7 +74,7 @@ namespace thread {
         ~ThreadPool();
 
         static ThreadPool& defaultThreadPool();
-        
+
         void resize(size_t nThreads = std::thread::hardware_concurrency());
         void destroy();
 

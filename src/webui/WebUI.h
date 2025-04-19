@@ -1,6 +1,7 @@
 #pragma once
-#include <thread>
 #include <mutex>
+#include <nlohmann/json.hpp>
+#include <thread>
 
 namespace webuiServer {
     class WebUI {
@@ -21,6 +22,9 @@ namespace webuiServer {
 
         // 发送TPS数据
         void sendTpsRecordData(size_t tps, size_t mspt);
+
+        // 发送实体数据
+        void sendEntityRecordData(const nlohmann::json& actorInfoList);
 
     private:
         // 私有默认构造函数
