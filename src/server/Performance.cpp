@@ -51,7 +51,7 @@ server::Performance& server::Performance::tpsBeginRecord() {
     tpsEndRecord();
     tpsRecordFlag = true;
     PerformanceLevelTickEventHook::hook();
-    tpsRecordTask = [this]() {
+    tpsRecordTask = [this, now = std::make_shared<std::chrono::system_clock::time_point>(std::chrono::system_clock::now())]() {
         if (tpsRecordFlag) {
             std::tuple<std::chrono::steady_clock::time_point, std::chrono::steady_clock::time_point> timePair;
             size_t tickCount = 0;
@@ -72,7 +72,8 @@ server::Performance& server::Performance::tpsBeginRecord() {
             } else {
                 sendTpsRecordData(tickCount, sum / tickCount / 1000);
             }
-            thread::ThreadPool::defaultThreadPool().addDelayTask(std::chrono::milliseconds(1000), tpsRecordTask);
+            thread::ThreadPool::defaultThreadPool().addDelayTask(std::chrono::system_clock::duration(1s) - (std::chrono::system_clock::now() - *now), tpsRecordTask);
+            *now = *now + std::chrono::system_clock::duration(1s);
         } else {
             std::lock_guard lock(tpsRecordMutex);
             tpsRecordCV.notify_all();
