@@ -20,9 +20,15 @@
         </RouterLink>
       </template>
     </el-menu-item>
-    <el-menu-item index="3">
-      <el-icon><icon-menu /></el-icon>
-      <template #title>Navigator Two</template>
+    <el-menu-item index="3" class="f no-padding">
+      <template #title>
+        <RouterLink to="/entityInfo" class="fl fg routerLink" @click="targetNavigate">
+          <el-icon>
+            <Watermelon />
+          </el-icon>
+          <div>实体信息</div>
+        </RouterLink>
+      </template>
     </el-menu-item>
     <el-menu-item index="4" disabled>
       <el-icon>
@@ -53,7 +59,7 @@
 import {
   Cpu,
   Document,
-  Menu as IconMenu,
+  Watermelon,
   Location,
   Setting,
 } from '@element-plus/icons-vue'

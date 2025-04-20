@@ -13,32 +13,32 @@ const router = createRouter({
     {
       path: '/',
       name: 'performanceView',
-      meta:{
-        pageName: '服务器性能'
+      meta: {
+        pageName: '服务器性能',
       },
       component: () => import('../views/PerformanceView.vue'),
     },
     {
       path: '/playerTrajectoryMap',
       name: 'playerTrajectoryMap',
-      meta:{
-        pageName: '玩家轨迹地图'
+      meta: {
+        pageName: '玩家轨迹地图',
       },
       component: () => import('../views/PlayerTrajectoryMapView.vue'),
     },
     {
-      path: '/interaction',
-      name: 'interaction',
-      meta:{
-        pageName: ''
+      path: '/entityInfo',
+      name: 'entityInfo',
+      meta: {
+        pageName: '实体信息',
       },
-      component: () => import('../views/InteractionView.vue'),
+      component: () => import('../views/EntityInfoView.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      meta:{
-        pageName: ''
+      meta: {
+        pageName: '',
       },
       component: () => import('../views/AboutView.vue'),
     },
