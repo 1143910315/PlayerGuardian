@@ -14,7 +14,11 @@
         </div>
       </div>
     </header>
-    <div class="hidden receiveTpsData receiveEntityData" @tps-data="tpsData" @entity-data="entityData"></div>
+    <div
+      class="hidden receiveTpsData receiveEntityData"
+      @tps-data="tpsData"
+      @entity-data="entityData"
+    ></div>
     <RouterView />
   </el-config-provider>
 </template>
@@ -81,14 +85,14 @@ const entityData = (event: CustomEvent<EntityEventDetail[]>) => {
 
   // 预处理当前事件中的玩家，建立快速查找表
   event.detail
-    .filter(detail => detail.typeName === 'minecraft:player')
-    .forEach(playerDetail => {
+    .filter((detail) => detail.typeName === 'minecraft:player')
+    .forEach((playerDetail) => {
       currentPlayers.set(playerDetail.nameTag, playerDetail)
     })
 
   // 第一轮遍历：更新或新增玩家数据
   currentPlayers.forEach((detail, nameTag) => {
-    const existingIndex = store.player.findIndex(p => p.name === nameTag)
+    const existingIndex = store.player.findIndex((p) => p.name === nameTag)
 
     if (existingIndex > -1) {
       // 更新现有玩家数据
@@ -97,7 +101,7 @@ const entityData = (event: CustomEvent<EntityEventDetail[]>) => {
         x: detail.x,
         y: detail.y,
         z: detail.z,
-        dimensionID: detail.dimensionId
+        dimensionID: detail.dimensionId,
       }
     } else {
       // 添加新玩家
@@ -108,14 +112,14 @@ const entityData = (event: CustomEvent<EntityEventDetail[]>) => {
           x: detail.x,
           y: detail.y,
           z: detail.z,
-          dimensionID: detail.dimensionId
-        }
+          dimensionID: detail.dimensionId,
+        },
       })
     }
   })
 
   // 第二轮遍历：更新玩家在线状态
-  store.player.forEach(player => {
+  store.player.forEach((player) => {
     if (!currentPlayers.has(player.name)) {
       player.state = PlayerConnectionState.Offline
     } else {

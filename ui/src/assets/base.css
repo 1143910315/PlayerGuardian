@@ -85,19 +85,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button{
+button {
   border: 0;
   background-color: transparent;
 }
 
-.no-padding{
+.no-padding {
   padding: 0 !important;
 }
 
-.right-padding{
+.right-padding {
   padding-right: 6px;
 }
 
-.hidden{
+.hidden {
   display: none;
 }

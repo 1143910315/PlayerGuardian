@@ -17,12 +17,12 @@ import type { Position } from '@/types/position'
 const entityStore = useEntityStore()
 
 const tableData = computed(() =>
-  entityStore.player.map(player => ({
+  entityStore.player.map((player) => ({
     name: player.name,
     state: PlayerConnectionStateNames[player.state],
     position: formatPosition(player.position),
-    dimension: getDimensionName(player.position.dimensionID)
-  }))
+    dimension: getDimensionName(player.position.dimensionID),
+  })),
 )
 
 // 坐标格式化函数

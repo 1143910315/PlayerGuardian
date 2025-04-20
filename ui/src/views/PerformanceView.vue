@@ -2,16 +2,19 @@
   <div class="fcl fg">
     <div class="s1"></div>
     <div class="fl">
-      <el-text size="large">服务器总体状态：</el-text><el-text size="large" :type="serverStatus">{{ serverText }}</el-text>
+      <el-text size="large">服务器总体状态：</el-text
+      ><el-text size="large" :type="serverStatus">{{ serverText }}</el-text>
     </div>
     <div class="fl">
       <div class="s1"></div>
       <div class="fcl">
         <div class="fl">
-          <el-text size="large">TPS：</el-text><el-text size="large" :type="tpsStatus">{{ tps }}</el-text>
+          <el-text size="large">TPS：</el-text
+          ><el-text size="large" :type="tpsStatus">{{ tps }}</el-text>
         </div>
         <div class="fl">
-          <el-text size="large">MSPT：</el-text><el-text size="large" :type="msptStatus">{{ mspt }}ms</el-text>
+          <el-text size="large">MSPT：</el-text
+          ><el-text size="large" :type="msptStatus">{{ mspt }}ms</el-text>
         </div>
         <div class="fl">
           <el-text size="large">CPU：</el-text><el-text size="large" type="success">20%</el-text>

@@ -1,19 +1,14 @@
 <template>
   <div class="fcl fg">
     <div class="fg"></div>
-    <el-select
-    v-model="value"
-    filterable
-    placeholder="Select"
-    style="width: 240px"
-  >
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
-    />
-  </el-select>
+    <el-select v-model="value" filterable placeholder="Select" style="width: 240px">
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      />
+    </el-select>
   </div>
 </template>
 <script lang="ts" setup>

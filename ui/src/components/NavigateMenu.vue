@@ -56,13 +56,7 @@
 </style>
 
 <script lang="ts" setup>
-import {
-  Cpu,
-  Document,
-  Watermelon,
-  Location,
-  Setting,
-} from '@element-plus/icons-vue'
+import { Cpu, Document, Watermelon, Location, Setting } from '@element-plus/icons-vue'
 const emit = defineEmits(['navigete'])
 const targetNavigate = () => {
   emit('navigete')
