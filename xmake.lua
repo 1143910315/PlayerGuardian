@@ -8,7 +8,7 @@ if not has_config("vs_runtime") then
 end
 
 if is_mode("debug") then
-    add_requires("webui", {debug = true})
+    add_requires("webui", {configs = {log = false}, debug = true})
     add_requires("date", {debug = true})
     add_requires("nlohmann_json", {debug = true})
     if is_config("target_type", "server") then
